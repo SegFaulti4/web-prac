@@ -54,7 +54,7 @@ CREATE TABLE forum_message (
 	message_txt 	text 		NOT NULL,
 	created_at 		timestamp 	DEFAULT CURRENT_TIMESTAMP 
 						        NOT NULL,
-						
+
 	FOREIGN KEY (thread_name, partition_name) 		REFERENCES thread(thread_name, partition_name)
                                                     ON DELETE CASCADE
                                                     ON UPDATE CASCADE
