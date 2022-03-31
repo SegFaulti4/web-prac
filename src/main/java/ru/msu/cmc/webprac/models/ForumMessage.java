@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "forum_message")
@@ -41,4 +42,7 @@ public class ForumMessage {
     @Column(name = "created_at")
     @NonNull
     private Date created_at;
+
+    @OneToMany(mappedBy = "reply_to")
+    private Set<ForumMessage> replies;
 }

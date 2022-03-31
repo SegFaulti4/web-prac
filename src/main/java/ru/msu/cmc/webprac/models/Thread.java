@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Thread {
     @EmbeddedId
-    private ThreadId id;
+    private ThreadID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("partition_id")
@@ -33,4 +33,7 @@ public class Thread {
 
     @ManyToMany(mappedBy = "threads")
     private Set<ForumUser> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "thread")
+    private Set<ForumMessage> messages;
 }

@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "forum_partition")
@@ -14,7 +15,7 @@ import java.sql.Date;
 @AllArgsConstructor
 public class ForumPartition {
     @EmbeddedId
-    private ForumPartitionId id;
+    private ForumPartitionID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "created_by")
@@ -27,4 +28,7 @@ public class ForumPartition {
     @Column(nullable = false, name = "general_access")
     @NonNull
     private Boolean general_access;
+
+    @OneToMany(mappedBy = "partition")
+    private Set<Thread> threads;
 }

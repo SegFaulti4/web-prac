@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class ForumUser {
     @EmbeddedId
-    private ForumUserId id;
+    private ForumUserID id;
 
     @Column(name = "passwd")
     @NonNull
@@ -40,6 +40,14 @@ public class ForumUser {
             inverseJoinColumns = { @JoinColumn(name = "thread_name"), @JoinColumn(name = "partition_name") }
     )
     private Set<Thread> threads = new HashSet<>();
+
+    public Set<ForumPartition> getForumPartitions() {
+        Set<ForumPartition> res = new HashSet<>();
+        for (Thread t : threads) {
+            res.add(t.getPartition());
+        }
+        return res;
+    }
 
     public enum UserRole {
         BANNED("banned"),

@@ -5,13 +5,13 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
-import ru.msu.cmc.webprac.DAO.CommonDAO;
 
 import javax.persistence.criteria.CriteriaQuery;
+import java.io.Serializable;
 import java.util.Collection;
 
 @Repository
-public abstract class CommonDAOImplementation<T> implements CommonDAO<T>{
+public abstract class CommonDAOImplementation<T, ID extends Serializable> implements CommonDAO<T, ID>{
     protected SessionFactory sessionFactory;
 
     protected Class<T> persistentClass;
@@ -35,9 +35,15 @@ public abstract class CommonDAOImplementation<T> implements CommonDAO<T>{
     }
 
     @Override
+    public T getByID(ID id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(persistentClass, id);
+        }
+    }
+
+    @Override
     public void save(T entity) {
         try (Session session = sessionFactory.openSession()) {
-            // try set id to NULL
             session.beginTransaction();
             session.saveOrUpdate(entity);
             session.getTransaction().commit();

@@ -12,7 +12,9 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForumUserId implements Serializable {
-    @Column(nullable = false, name = "username")
-    private String username;
+public class ThreadID implements Serializable {
+    private ForumPartitionID partition_id;
+
+    @Column(nullable = false, name = "thread_name")
+    private String thread_name;
 }

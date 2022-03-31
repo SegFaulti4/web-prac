@@ -3,24 +3,21 @@ package ru.msu.cmc.webprac.DAO;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-import ru.msu.cmc.webprac.DAO.ForumUserDAO;
 import ru.msu.cmc.webprac.models.ForumUser;
-import ru.msu.cmc.webprac.models.ForumUserId;
+import ru.msu.cmc.webprac.models.ForumUserID;
 import ru.msu.cmc.webprac.models.Thread;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Repository
-public class ForumUserDAOImplementation extends CommonDAOImplementation<ForumUser> implements ForumUserDAO{
+public class ForumUserDAOImplementation extends CommonDAOImplementation<ForumUser, ForumUserID> implements ForumUserDAO {
 
     public ForumUserDAOImplementation(){
         super(ForumUser.class);
     }
 
     @Override
-    public List<ForumUser> getAllForumUserByThreadActivity(Thread thread) {
+    public List<ForumUser> getForumUsersByThread(Thread thread) {
         try (Session session = sessionFactory.openSession()) {
             Query<ForumUser> query = session.createQuery(
                     "select u " +
@@ -33,13 +30,6 @@ public class ForumUserDAOImplementation extends CommonDAOImplementation<ForumUse
                     "thread_name", thread.getId().getThread_name()
             );
             return query.getResultList().size() == 0 ? null : query.getResultList();
-        }
-    }
-
-    @Override
-    public ForumUser getForumUserByUsername(String username) {
-        try (Session session = sessionFactory.openSession()) {
-            return session.get(ForumUser.class, new ForumUserId(username));
         }
     }
 

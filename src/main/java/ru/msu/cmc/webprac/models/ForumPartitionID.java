@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForumPartitionId implements Serializable {
+public class ForumPartitionID implements Serializable {
     @Column(nullable = false, name = "partition_name")
     private String partition_name;
 }
