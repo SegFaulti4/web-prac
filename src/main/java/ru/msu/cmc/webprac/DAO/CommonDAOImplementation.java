@@ -55,7 +55,7 @@ public abstract class CommonDAOImplementation<T, ID extends Serializable> implem
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             for (T entity : entities) {
-                this.save(entity);
+                session.saveOrUpdate(entity);
             }
             session.getTransaction().commit();
         }
