@@ -1,9 +1,17 @@
 package ru.msu.cmc.webprac.models;
 
 import lombok.*;
+import lombok.NonNull;
+import org.hibernate.HibernateException;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,10 +21,18 @@ import java.util.Set;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class ForumUser {
-    @EmbeddedId
-    private ForumUserID id;
+
+    public ForumUser(@NonNull String name, @NonNull String password, String sts, @NonNull UserRole role) {
+        id = name;
+        passwd = password;
+        status = sts;
+        userrole = role;
+    }
+
+    @Id
+    @Column(name = "username")
+    private String id;
 
     @Column(name = "passwd")
     @NonNull
@@ -26,18 +42,19 @@ public class ForumUser {
     private String status;
 
     @Column(name = "userrole")
+    @Enumerated(EnumType.STRING)
     @NonNull
     private UserRole userrole;
 
-    @Column(nullable = false, name = "created_at")
-    @NonNull
-    private Date created_at;
+    @Column(name = "created_at", updatable=false)
+    @CreationTimestamp
+    private LocalDateTime created_at;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "activity",
             joinColumns = { @JoinColumn(name = "username") },
-            inverseJoinColumns = { @JoinColumn(name = "thread_name"), @JoinColumn(name = "partition_name") }
+            inverseJoinColumns = { @JoinColumn(name = "partition_name"), @JoinColumn(name = "thread_name") }
     )
     private Set<Thread> threads = new HashSet<>();
 
@@ -47,6 +64,11 @@ public class ForumUser {
             res.add(t.getPartition());
         }
         return res;
+    }
+
+    public void addThread(Thread t) {
+        threads.add(t);
+        t.getUsers().add(this);
     }
 
     public enum UserRole {

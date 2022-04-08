@@ -1,17 +1,18 @@
-package ru.msu.cmc.webprac.DAO;
+package ru.msu.cmc.webprac.DAO.impl;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
+import ru.msu.cmc.webprac.DAO.CommonDAO;
 
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.Collection;
 
 @Repository
-public abstract class CommonDAOImplementation<T, ID extends Serializable> implements CommonDAO<T, ID>{
+public abstract class CommonDAOImplementation<T, ID extends Serializable> implements CommonDAO<T, ID> {
     protected SessionFactory sessionFactory;
 
     protected Class<T> persistentClass;

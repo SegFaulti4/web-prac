@@ -1,5 +1,3 @@
-CREATE TYPE usrrole AS ENUM ('banned', 'common', 'moderator');
-
 DROP TABLE IF EXISTS activity CASCADE;
 DROP TABLE IF EXISTS forum_message CASCADE;
 DROP TABLE IF EXISTS thread CASCADE;
@@ -10,7 +8,7 @@ CREATE TABLE forum_user (
 	username 		text 		PRIMARY KEY,
 	passwd 		    text 		NOT NULL,
 	status 		    text,
-	userrole 		usrrole 	NOT NULL,
+	userrole 		text 	    NOT NULL,
 	created_at 		timestamp 	DEFAULT CURRENT_TIMESTAMP
 						        NOT NULL
 );
