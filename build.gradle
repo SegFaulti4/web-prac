@@ -24,6 +24,10 @@ dependencies {
 	implementation 'org.projectlombok:lombok:1.18.22'
 	implementation 'org.hibernate:hibernate-core:5.6.7.Final'
 	implementation 'org.postgresql:postgresql:42.3.3'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.thymeleaf:thymeleaf:3.1.0.M1'
+	implementation 'org.thymeleaf:thymeleaf-spring5:3.1.0.M1'
+	implementation 'org.seleniumhq.selenium:selenium-java'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
