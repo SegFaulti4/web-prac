@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.NonNull;
 import org.hibernate.HibernateException;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 import javax.persistence.*;
