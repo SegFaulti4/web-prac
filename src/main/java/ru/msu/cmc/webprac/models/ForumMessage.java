@@ -37,7 +37,7 @@ public class ForumMessage {
     @NonNull
     private Thread thread;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reply_to")
     private ForumMessage reply_to;
 
@@ -52,6 +52,6 @@ public class ForumMessage {
     @CreationTimestamp
     private LocalDateTime created_at;
 
-    @OneToMany(mappedBy = "reply_to")
+    @OneToMany(mappedBy = "reply_to", fetch = FetchType.LAZY)
     private Set<ForumMessage> replies;
 }

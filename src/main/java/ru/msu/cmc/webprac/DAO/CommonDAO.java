@@ -14,4 +14,5 @@ public interface CommonDAO<T, ID> {
     void delete(T entity);
 
     void update(T entity);
+
 }

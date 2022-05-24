@@ -23,7 +23,6 @@ import java.util.Set;
 @ToString
 @NoArgsConstructor
 public class ForumUser {
-
     public ForumUser(@NonNull String name, @NonNull String password, String sts, @NonNull UserRole role) {
         id = name;
         passwd = password;
@@ -51,7 +50,7 @@ public class ForumUser {
     @CreationTimestamp
     private LocalDateTime created_at;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "activity",
             joinColumns = { @JoinColumn(name = "username") },

@@ -31,6 +31,17 @@
                 <a class="nav-link" id="peopleListLink" th:href="@{forumUsers}">Users</a>
             </li>
         </ul>
+        <div th:if="!${authenticated}">
+            <span class="navbar-text">
+                <a href="/login">Войти</a>
+            </span>
+        </div>
+        <div th:if="${authenticated}">
+            <span class="navbar-text">
+                <a href="/myProfile">Мой Профиль</a>
+                <a href="/perform_logout">Выйти</a>
+            </span>
+        </div>
     </div>
 </nav>
 <!--end of page header-->

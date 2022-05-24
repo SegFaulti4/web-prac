@@ -38,6 +38,6 @@ public class ForumPartition {
     @NonNull
     private Boolean general_access;
 
-    @OneToMany(mappedBy = "partition")
+    @OneToMany(mappedBy = "partition", fetch = FetchType.LAZY)
     private Set<Thread> threads;
 }
