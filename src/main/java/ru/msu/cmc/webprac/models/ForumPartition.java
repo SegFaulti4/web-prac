@@ -2,6 +2,7 @@ package ru.msu.cmc.webprac.models;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -26,7 +27,7 @@ public class ForumPartition {
     @Column(name = "partition_name")
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by")
     private ForumUser created_by;
 
@@ -38,6 +39,6 @@ public class ForumPartition {
     @NonNull
     private Boolean general_access;
 
-    @OneToMany(mappedBy = "partition", fetch = FetchType.LAZY)
-    private Set<Thread> threads;
+    @Formula(value = "(select count(thread.thread_name) from thread where thread.partition_name = partition_name)")
+    private Long thread_count;
 }

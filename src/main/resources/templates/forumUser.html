@@ -29,14 +29,23 @@
 <div class="indent">
     <div class="userHeader">
         <span class="userAvatar">
-            <img width="150" th:src="@{default_logo.png}"/>
+            <img width="150" src="/default_logo.png" alt="/default_logo.png">
         </span>
         <div class="userInfo">
-            <h3 th:text="${forumUser.getId()}"></h3>
-            <p th:text="'Role: ' + ${forumUser.getUserrole()}"></p>
-            <p th:if="${forumUser.getStatus() != null}" th:text="'Status: ' + ${forumUser.getStatus()}"></p>
-            <p th:text="'Registration date: ' + ${forumUser.getCreated_at()}"></p>
+            <h3 th:text="${user.getId()}"></h3>
+            <p th:text="'Role: ' + ${user.getUserrole()}"></p>
+            <p th:if="${user.getStatus() != null}" th:text="'Status: ' + ${user.getStatus()}"></p>
+            <p th:text="'Registration date: ' + ${user.getCreated_at()}"></p>
         </div>
+    </div>
+
+    <div class="container">
+        <a class="col" th:href="@{/users/{user}/ban(user=${user.getId()})}">
+            <button type="button" class="btn btn-danger">Ban</button>
+        </a>
+        <a class="col" th:href="@{/users/{user}/promote(user=${user.getId()})}">
+            <button type="button" class="btn">Promote</button>
+        </a>
     </div>
 
     <div th:replace="common :: footer"></div>

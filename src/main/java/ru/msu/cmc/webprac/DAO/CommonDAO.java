@@ -1,9 +1,10 @@
 package ru.msu.cmc.webprac.DAO;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface CommonDAO<T, ID> {
-    Collection<T> getAll();
+    List<T> getAll();
 
     T getByID(ID id);
 

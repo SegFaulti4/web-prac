@@ -2,9 +2,9 @@ package ru.msu.cmc.webprac.models;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,12 +25,12 @@ public class Thread {
     @EmbeddedId
     private ThreadID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "partition_name", insertable = false, updatable = false)
     @NonNull
     private ForumPartition partition;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by")
     private ForumUser created_by;
 
@@ -38,9 +38,6 @@ public class Thread {
     @CreationTimestamp
     private LocalDateTime created_at;
 
-    @ManyToMany(mappedBy = "threads")
-    private Set<ForumUser> users = new HashSet<>();
-
-    @OneToMany(mappedBy = "thread", fetch=FetchType.LAZY)
-    private Set<ForumMessage> messages;
+    @Formula(value = "(select count(m.message_id) from forum_message m where m.partition_name = partition_name and m.thread_name = thread_name)")
+    private Long msg_count;
 }

@@ -1,43 +1,68 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Forum Users</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <style>
-        .indent {
-            margin-left: 30px;
-            margin-right: 30px;
-            margin-top: 20px;
-        }
-    </style>
+  <title>Forum Users</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+      .indent {
+          margin-left: 30px;
+          margin-right: 30px;
+          margin-top: 20px;
+      }
+  </style>
 </head>
 <body>
 
 <div th:replace="common :: header"> </div>
 
 <div class="indent">
-    <table class="table table-bordered">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col"> Username </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${users.isEmpty()}">
-            <td colspan="6"> There are no users in this forum yet. Would you be first? </td>
-        </tr>
-        <tr th:each="user : ${users}">
-            <td>
-                <a th:href="'/forumUser?id=' + ${user.getId()}">
-                    <span th:text="${user.getId()}"> </span>
-                </a>
-            </td>
-        </tr>
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Users</li>
+      </ol>
+    </nav>
+  </div>
 
-        </tbody>
-    </table>
+  <div class="container">
+    <div class="row">
+      <h5 class="col">Users</h5>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top: 15px">
+    <form method="get" th:action="@{/users}">
+      <div class="form-row">
+        <div class="form-group col">
+          <input type="text" class="form-control" th:value="${pattern}" id="search-input" name="pattern" placeholder="User name"/>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="container">
+    <div th:if="${users.isEmpty()}">
+      No users found.
+    </div>
+
+    <div class="row bg-light" style="height: 60px" th:each="user : ${users}">
+      <a class="col-6 text-dark border-right my-auto" style="text-align: left" th:href="@{/users/{user}(user = ${user.getId()})}" th:text="${user.getId()}"></a>
+      <div class="col-4 my-auto" style="margin-left: 20px">
+        <p class="row my-auto" th:text="${user.getUserrole().name()}"></p>
+        <small class="row my-auto" th:text="${user.getCreated_at()}"></small>
+      </div>
+      <div class="col my-auto" th:if="${#strings.equals(user_role, 'moderator')}">
+        <a th:href="@{/users/ban(partition=${partition}, thread=${thread}, pattern=${pattern}, user=${user.getId()})}">
+          <button type="button" class="w-100 h-100 btn btn-danger">Ban</button>
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
 
 

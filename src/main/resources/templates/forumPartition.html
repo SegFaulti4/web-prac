@@ -1,10 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <title>Forum Users</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+      .indent {
+          margin-left: 30px;
+          margin-right: 30px;
+          margin-top: 20px;
+      }
+  </style>
 </head>
 <body>
+
+<div th:replace="common :: header"></div>
+
+<div class="indent">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a class="text-dark" href="/forum">Forum</a></li>
+        <li class="breadcrumb-item active" aria-current="page" th:text="${partition.getId()}"></li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <h5 class="col" th:text="${partition.getId()} + ' Threads'"></h5>
+      <div class="col">
+        <a th:if="${#strings.equals(user_role, 'moderator')}" th:href="@{/forum/{partition}/conceal(partition=${partition.getId()}, pattern=${pattern})}">
+          <button type="button" class="btn btn-danger w-100">Conceal</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top: 15px">
+    <form method="get" th:action="@{/forum/{partition}(partition=${partition.getId()})}">
+      <div class="form-row">
+        <div class="form-group col">
+          <input type="text" class="form-control" th:value="${pattern}" id="search-input" name="pattern" placeholder="Thread name"/>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="container">
+    <div th:if="${threads.isEmpty()}">
+      No threads found.
+    </div>
+    <div class="row bg-light" style="height: 60px" th:each="thread : ${threads}">
+      <a class="col-6 text-dark my-auto" style="text-align: left" th:href="@{/forum/{partition}/{thread}(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()})}" th:text="${thread.getId().getThread_name()}"></a>
+      <div class="col-1 border-right my-auto">
+        <p class="row my-auto" th:text="${thread.getMsg_count()}"></p>
+        <small class="row my-auto">msg</small>
+      </div>
+      <div class="col-2 my-auto" style="margin-left: 20px">
+        <p class="row my-auto" th:text="${thread.getCreated_by().getId()}"></p>
+        <small class="row my-auto" th:text="${thread.getCreated_at()}"></small>
+      </div>
+      <div class="col my-auto" th:if="${#strings.equals(user_role, 'moderator')}">
+        <a th:href="@{/forum/{partition}/delete(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()})}">
+          <button type="button" class="w-100 h-100 btn btn-danger">Delete</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top: 30px">
+    <form th:if="${authenticated}" method="post" th:action="@{/forum/{partition}/post (partition=${partition.getId()})}">
+      <div class="form-row">
+        <div class="form-group col">
+          <input type="text" class="form-control " id="thread-name" placeholder="Thread name" name="thread" required></input>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary" type="submit">Create</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div th:replace="common :: site-script"></div>
 
 </body>
 </html>

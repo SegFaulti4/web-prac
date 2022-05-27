@@ -28,18 +28,18 @@
                 <a class="nav-link" id="rootLink" href="/">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="peopleListLink" th:href="@{forumUsers}">Users</a>
+                <a class="nav-link" id="peopleListLink" href="/users">Users</a>
             </li>
         </ul>
         <div th:if="!${authenticated}">
             <span class="navbar-text">
-                <a href="/login">Войти</a>
+                <a href="/login">Login</a>
             </span>
         </div>
         <div th:if="${authenticated}">
             <span class="navbar-text">
-                <a href="/myProfile">Мой Профиль</a>
-                <a href="/perform_logout">Выйти</a>
+                <a th:href="@{/users/{user}(user=${user_name})}">My Profile</a>
+                <a href="/perform_logout">Logout</a>
             </span>
         </div>
     </div>

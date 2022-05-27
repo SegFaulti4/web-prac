@@ -13,7 +13,7 @@ public class IndexController {
     @RequestMapping(value = { "/", "/index"})
     public String index(Model model, Authentication auth) {
         bindAuth(model, auth);
-        return "index";
+        return "redirect:/forum";
     }
 
 }

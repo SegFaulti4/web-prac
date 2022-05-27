@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Forum Users</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+      .indent {
+          margin-left: 30px;
+          margin-right: 30px;
+          margin-top: 20px;
+      }
+  </style>
+</head>
+<body>
+
+<div th:replace="common :: header"> </div>
+
+<div class="indent">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a class="text-dark" href="/forum">Forum</a></li>
+        <li class="breadcrumb-item"><a class="text-dark" th:href="@{/forum/{partition}(partition=${thread.getId().getPartition_name()})}" th:text="${thread.getId().getPartition_name()}"></a></li>
+        <li class="breadcrumb-item active" aria-current="page" th:text="${thread.getId().getThread_name()}"></li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <h5 class="col" th:text="${thread.getId().getThread_name()}"></h5>
+      <div class="col">
+        <a th:if="${#strings.equals(user_role, 'moderator')} or ${#strings.equals(user_name, thread.getCreated_by().getId())}" th:href="@{/forum/{partition}/delete(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()})}">
+          <button type="button" class="btn btn-danger w-100">Delete</button>
+        </a>
+      </div>
+      <div class="col">
+        <a th:href="@{/users(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()})}">
+          <button type="button" class="btn btn-primary w-100">Search users</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div th:if="${messages.isEmpty()}">
+      No messages found.
+    </div>
+
+    <div class="row bg-light" style="position: relative; padding-top: 15px; height: 80px" th:each="message : ${messages}">
+      <div class="col-2 border-right my-auto">
+        <p class="my-auto" th:text="${message.getCreated_by().getId()}"></p>
+      </div>
+      <div class="col-6 border-right my-auto">
+        <header class="my-auto">
+          <small th:if="${message.getReply_to() != null}" class="my-auto" th:text="'reply to: #' + ${message.getReply_to().getId()}"></small>
+        </header>
+        <article style="word-wrap: break-word" class="my-auto" th:text="${message.getMessage()}"></article>
+        <footer class="my-auto">
+          <small class="col my-auto" th:text="${message.getCreated_at()}"></small>
+          <small class="col my-auto" th:text="'#' + ${message.getId()}"></small>
+        </footer>
+      </div>
+      <div class="col my-auto">
+        <button class="w-100 h-100 btn btn-secondary" th:onclick="'document.getElementById(\'reply-to\').value = ' + ${message.getId()}">Reply</button>
+      </div>
+      <div class="col my-auto">
+        <a th:if="${#strings.equals(user_role, 'moderator')} or ${#strings.equals(user_name, thread.getCreated_by().getId())}" th:href="@{/forum/{partition}/{thread}/delete(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()}, message=${message.getId()})}">
+          <button type="button" class="w-100 h-100 btn btn-danger">Delete</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="container" style="margin-top: 30px">
+    <form th:if="${authenticated}" method="post" th:action="@{/forum/{partition}/{thread}/post (partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()})}">
+      <div class="form-row">
+        <div class="form-group input-group col">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">#</span>
+          </div>
+          <input type="text" class="form-control" id="reply-to" name="reply_to" value="" aria-describedby="basic-addon1" readonly></input>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary" onclick="document.getElementById('reply-to').value = ''">No reply</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col">
+          <input type="text" class="form-control" id="message-text" placeholder="message text" name="message_text" required></input>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary" type="submit">Send</button>
+        </div>
+      </div>
+    </form>
+  </footer>
+</div>
+
+<div th:replace="common :: site-script"></div>
+
+</body>
+</html>

@@ -9,8 +9,10 @@ import java.util.Set;
 
 public interface ForumUserDAO extends CommonDAO<ForumUser, String> {
 
-    List<ForumUser> getForumUsersByThreadID(ThreadID thread);
     List<ForumUser> getForumUsersByThreadID(String part_name, String thd_name);
-    // List<ForumUser> getForumUsersByThreadSet(Set<Thread> thread);
+
+    List<ForumUser> getForumUsersByThreadID(String part_name, String thd_name, String pattern);
+
+    List<ForumUser> getAll(String pattern);
 
 }

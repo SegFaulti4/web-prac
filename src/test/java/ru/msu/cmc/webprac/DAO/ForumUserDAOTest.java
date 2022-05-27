@@ -70,7 +70,6 @@ class ForumUserDAOTest {
             u.addThread(t);
             session.getTransaction().commit();
         }*/
-        lu.get(0).addThread(lt.get(0));
         forumUserDAO.update(lu.get(0));
     }
 

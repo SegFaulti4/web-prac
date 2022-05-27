@@ -50,27 +50,6 @@ public class ForumUser {
     @CreationTimestamp
     private LocalDateTime created_at;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "activity",
-            joinColumns = { @JoinColumn(name = "username") },
-            inverseJoinColumns = { @JoinColumn(name = "partition_name"), @JoinColumn(name = "thread_name") }
-    )
-    private Set<Thread> threads = new HashSet<>();
-
-    public Set<ForumPartition> getForumPartitions() {
-        Set<ForumPartition> res = new HashSet<>();
-        for (Thread t : threads) {
-            res.add(t.getPartition());
-        }
-        return res;
-    }
-
-    public void addThread(Thread t) {
-        threads.add(t);
-        t.getUsers().add(this);
-    }
-
     public enum UserRole {
         BANNED("banned"),
         COMMON("common"),

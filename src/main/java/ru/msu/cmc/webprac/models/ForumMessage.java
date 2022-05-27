@@ -29,7 +29,7 @@ public class ForumMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
             @JoinColumn(name = "thread_name", referencedColumnName = "thread_name"),
             @JoinColumn(name = "partition_name", referencedColumnName = "partition_name")
@@ -41,7 +41,7 @@ public class ForumMessage {
     @JoinColumn(name = "reply_to")
     private ForumMessage reply_to;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "username")
     private ForumUser created_by;
 
@@ -51,7 +51,4 @@ public class ForumMessage {
     @Column(updatable = false, name = "created_at")
     @CreationTimestamp
     private LocalDateTime created_at;
-
-    @OneToMany(mappedBy = "reply_to", fetch = FetchType.LAZY)
-    private Set<ForumMessage> replies;
 }

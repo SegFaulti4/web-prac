@@ -10,6 +10,7 @@ import ru.msu.cmc.webprac.DAO.CommonDAO;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 @Repository
 public abstract class CommonDAOImplementation<T, ID extends Serializable> implements CommonDAO<T, ID> {
@@ -27,7 +28,7 @@ public abstract class CommonDAOImplementation<T, ID extends Serializable> implem
     }
 
     @Override
-    public Collection<T> getAll() {
+    public List<T> getAll() {
         try (Session session = sessionFactory.openSession()) {
             CriteriaQuery<T> criteriaQuery = session.getCriteriaBuilder().createQuery(persistentClass);
             criteriaQuery.from(persistentClass);
