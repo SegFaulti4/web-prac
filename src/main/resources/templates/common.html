@@ -39,6 +39,7 @@
         <div th:if="${authenticated}">
             <span class="navbar-text">
                 <a th:href="@{/users/{user}(user=${user_name})}">My Profile</a>
+                &nbsp;
                 <a href="/perform_logout">Logout</a>
             </span>
         </div>

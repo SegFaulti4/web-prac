@@ -27,12 +27,22 @@
     </nav>
   </div>
 
-  <div class="container">
+  <div class="container" th:if="${!#strings.equals(user_role, 'moderator')}">
     <div class="row">
       <h5 class="col" th:text="${partition.getId()} + ' Threads'"></h5>
-      <div class="col">
-        <a th:if="${#strings.equals(user_role, 'moderator')}" th:href="@{/forum/{partition}/conceal(partition=${partition.getId()}, pattern=${pattern})}">
-          <button type="button" class="btn btn-danger w-100">Conceal</button>
+    </div>
+  </div>
+
+  <div class="container" th:if="${#strings.equals(user_role, 'moderator')}">
+    <div class="row">
+      <h5 class="col-9" th:text="${partition.getId()} + ' Threads'"></h5>
+      <div class="col my-auto">
+        <p style="display:inline-block" class="my-auto">Gen. Acc.</p>
+        <a style="display:inline-block" class="my-auto" th:href="@{/forum/{partition}/open(partition=${partition.getId()}, pattern=${pattern})}">
+          <button type="button" class="btn btn-success w-100 h-100"></button>
+        </a>
+        <a style="display:inline-block" class="my-auto" th:href="@{/forum/{partition}/conceal(partition=${partition.getId()}, pattern=${pattern})}">
+          <button type="button" class="btn btn-danger w-100 h-100"></button>
         </a>
       </div>
     </div>
@@ -55,22 +65,36 @@
     <div th:if="${threads.isEmpty()}">
       No threads found.
     </div>
-    <div class="row bg-light" style="height: 60px" th:each="thread : ${threads}">
-      <a class="col-6 text-dark my-auto" style="text-align: left" th:href="@{/forum/{partition}/{thread}(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()})}" th:text="${thread.getId().getThread_name()}"></a>
+
+    <div th:if="${#strings.equals(user_role, 'moderator')}" class="row bg-light" style="height: 60px" th:each="thread : ${threads}">
+      <a class="col-5 text-dark my-auto" style="text-align: left" th:href="@{/forum/{partition}/{thread}(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()})}" th:text="${thread.getId().getThread_name()}"></a>
       <div class="col-1 border-right my-auto">
         <p class="row my-auto" th:text="${thread.getMsg_count()}"></p>
         <small class="row my-auto">msg</small>
       </div>
-      <div class="col-2 my-auto" style="margin-left: 20px">
+      <div class="col-3 my-auto" style="margin-left: 20px">
         <p class="row my-auto" th:text="${thread.getCreated_by().getId()}"></p>
         <small class="row my-auto" th:text="${thread.getCreated_at()}"></small>
       </div>
-      <div class="col my-auto" th:if="${#strings.equals(user_role, 'moderator')}">
+      <div class="col my-auto">
         <a th:href="@{/forum/{partition}/delete(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()})}">
           <button type="button" class="w-100 h-100 btn btn-danger">Delete</button>
         </a>
       </div>
     </div>
+
+    <div th:if="${!#strings.equals(user_role, 'moderator')}" class="row bg-light" style="height: 60px" th:each="thread : ${threads}">
+      <a class="col-6 text-dark my-auto" style="text-align: left" th:href="@{/forum/{partition}/{thread}(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()})}" th:text="${thread.getId().getThread_name()}"></a>
+      <div class="col-1 border-right my-auto">
+        <p class="row my-auto" th:text="${thread.getMsg_count()}"></p>
+        <small class="row my-auto">msg</small>
+      </div>
+      <div class="col-3 my-auto" style="margin-left: 20px">
+        <p class="row my-auto" th:text="${thread.getCreated_by().getId()}"></p>
+        <small class="row my-auto" th:text="${thread.getCreated_at()}"></small>
+      </div>
+    </div>
+
   </div>
 
   <div class="container" style="padding-top: 30px">
@@ -85,6 +109,8 @@
       </div>
     </form>
   </div>
+  <br>
+  <div th:replace="common :: footer"></div>
 </div>
 
 <div th:replace="common :: site-script"></div>

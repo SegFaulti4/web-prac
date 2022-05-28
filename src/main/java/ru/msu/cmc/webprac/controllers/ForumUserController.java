@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import ru.msu.cmc.webprac.DAO.ForumUserDAO;
 import ru.msu.cmc.webprac.models.ForumUser;
 
@@ -32,14 +34,6 @@ public class ForumUserController {
         assert u != null;
         u.setUserrole(role);
         forumUserDAO.update(u);
-    }
-
-    private void banUser(String username) {
-        changeUserRole(username, ForumUser.UserRole.BANNED);
-    }
-
-    private void promoteUser(String username) {
-        changeUserRole(username, ForumUser.UserRole.MODERATOR);
     }
 
     @GetMapping("/users")
@@ -71,13 +65,22 @@ public class ForumUserController {
     }
 
     @GetMapping("/users/ban")
-    public String banUserFromUsers(@RequestParam(name = "partition", defaultValue = "") String partition_name,
-                                   @RequestParam(name = "thread", defaultValue = "") String thread_name,
-                                   @RequestParam(name = "pattern", defaultValue = "") String pattern,
-                                   @RequestParam(name = "user") String username,
-                                   Model model, Authentication auth) {
-        banUser(username);
-        return forumUsersList(partition_name, thread_name, pattern, model, auth);
+    public RedirectView banUserFromUsers(@RequestParam(name = "partition", defaultValue = "") String partition_name,
+                                         @RequestParam(name = "thread", defaultValue = "") String thread_name,
+                                         @RequestParam(name = "pattern", defaultValue = "") String pattern,
+                                         @RequestParam(name = "user") String username,
+                                         Model model, Authentication auth, RedirectAttributes attributes) {
+        changeUserRole(username, ForumUser.UserRole.BANNED);
+        if (!Objects.equals(partition_name, "")) {
+            attributes.addAttribute("partition_name", partition_name);
+        }
+        if (!Objects.equals(thread_name, "")) {
+            attributes.addAttribute("thread_name", thread_name);
+        }
+        if (!Objects.equals(pattern, "")) {
+            attributes.addAttribute("pattern", pattern);
+        }
+        return new RedirectView("/users");
     }
 
     @GetMapping("/users/{user}")
@@ -90,18 +93,19 @@ public class ForumUserController {
         return "forumUser";
     }
 
-    @GetMapping("/users/{user}/ban")
-    public String banUser(@PathVariable(name = "user") String username,
-                          Model model, Authentication auth) {
-        banUser(username);
-        return forumUser(username, model, auth);
-    }
-
-    @GetMapping("/users/{user}/promote")
-    public String promoteUser(@PathVariable(name = "user") String username,
-                          Model model, Authentication auth) {
-        promoteUser(username);
-        return forumUser(username, model, auth);
+    @GetMapping("/users/{user}/changeRole")
+    public RedirectView changeRole(@PathVariable(name = "user") String username,
+                             @RequestParam(name = "role") String role_str,
+                             Model model, Authentication auth, RedirectAttributes attributes) {
+        if (Objects.equals(role_str, "banned")) {
+            changeUserRole(username, ForumUser.UserRole.BANNED);
+        } else if (Objects.equals(role_str, "common")) {
+            changeUserRole(username, ForumUser.UserRole.COMMON);
+        } else if (Objects.equals(role_str, "moderator")) {
+            changeUserRole(username, ForumUser.UserRole.MODERATOR);
+        }
+        attributes.addAttribute("user", username);
+        return new RedirectView("/users/{user}");
     }
 
 }

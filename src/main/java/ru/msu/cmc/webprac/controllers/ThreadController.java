@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import ru.msu.cmc.webprac.DAO.ForumMessageDAO;
 import ru.msu.cmc.webprac.DAO.ForumPartitionDAO;
 import ru.msu.cmc.webprac.DAO.ForumUserDAO;
@@ -38,7 +40,6 @@ public class ThreadController {
         bindAuth(model, auth);
         Thread t = threadDAO.getByID(partition_name, thread_name);
         assert t != null;
-        assert t.getPartition().getGeneral_access() || auth != null && Objects.equals(auth.getAuthorities().toArray()[0].toString(), "moderator");
         List<ForumMessage> messages = forumMessageDAO.getThreadMessages(t);
         assert messages != null;
         model.addAttribute("thread", t);
@@ -47,42 +48,50 @@ public class ThreadController {
     }
 
     @PostMapping("/forum/{partition}/{thread}/post")
-    public String postMessage(@PathVariable(name = "partition") String partition_name,
-                              @PathVariable(name = "thread") String thread_name,
-                              @RequestParam(name = "message_text") String msg_txt,
-                              @RequestParam(name = "reply_to", defaultValue = "") String reply_to,
-                              Model model, Authentication auth) {
-        assert auth != null;
+    public RedirectView postMessage(@PathVariable(name = "partition") String partition_name,
+                                    @PathVariable(name = "thread") String thread_name,
+                                    @RequestParam(name = "message_text") String msg_txt,
+                                    @RequestParam(name = "reply_to", defaultValue = "") String reply_to,
+                                    Model model, Authentication auth, RedirectAttributes attributes) {
         Thread t = threadDAO.getByID(partition_name, thread_name);
         ForumUser u = forumUserDAO.getByID(auth.getName());
         assert t != null;
-        assert t.getPartition().getGeneral_access() || Objects.equals(auth.getAuthorities().toArray()[0].toString(), "moderator");
         assert u != null;
         ForumMessage replied;
         if (Objects.equals(reply_to, "")) {
+            System.out.println("Reply not provided");
             replied = null;
         } else {
+            System.out.println("Reply provided");
             replied = forumMessageDAO.getByID(Long.valueOf(reply_to));
-            assert replied != null;
         }
+
+        /*System.out.println(t.getId().getPartition_name());
+        System.out.println(t.getId().getThread_name());
+        System.out.println(replied == null ? false : replied.getId());
+        System.out.println(u.getId());
+        System.out.println(msg_txt);
+        System.out.println("");*/
+
         forumMessageDAO.save(new ForumMessage(t, replied, u, msg_txt));
-        return thread(partition_name, thread_name, model, auth);
+        attributes.addAttribute("partition", partition_name);
+        attributes.addAttribute("thread", thread_name);
+        return new RedirectView("/forum/{partition}/{thread}");
     }
 
     @GetMapping("/forum/{partition}/{thread}/delete")
-    public String deleteMessage(@PathVariable(name = "partition") String partition_name,
+    public RedirectView deleteMessage(@PathVariable(name = "partition") String partition_name,
                                 @PathVariable(name = "thread") String thread_name,
                                 @RequestParam(name = "message") Long message_id,
-                                Model model, Authentication auth) {
-        assert auth != null;
+                                Model model, Authentication auth, RedirectAttributes attributes) {
         Thread t = threadDAO.getByID(partition_name, thread_name);
         assert t != null;
-        assert t.getPartition().getGeneral_access() || Objects.equals(auth.getAuthorities().toArray()[0].toString(), "moderator");
         ForumMessage m = forumMessageDAO.getByID(message_id);
         assert m != null;
-        assert Objects.equals(auth.getAuthorities().toArray()[0].toString(), "moderator") || Objects.equals(m.getCreated_by().getId(), auth.getName());
         forumMessageDAO.delete(m);
-        return thread(partition_name, thread_name, model, auth);
+        attributes.addAttribute("partition", partition_name);
+        attributes.addAttribute("thread", thread_name);
+        return new RedirectView("/forum/{partition}/{thread}");
     }
 
 }

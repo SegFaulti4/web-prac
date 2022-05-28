@@ -17,19 +17,23 @@
 <div th:replace="common :: header"></div>
 
 <div class="indent">
-    <form method="post" action="/perform_login">
-        <div class="form-group">
-            <label>Login</label>
-            <input name="username" class="form-control" placeholder="username" type="text">
-        </div> <!-- form-group// -->
-        <div class="form-group">
-            <label>Password</label>
-            <input name="password" class="form-control" placeholder="******" type="password">
-        </div> <!-- form-group// -->
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block"> Войти  </button>
-        </div> <!-- form-group// -->
-    </form>
+    <div class="container">
+        <form method="post" action="/perform_login">
+            <div class="form-group">
+                <label>Username</label>
+                <input name="username" class="form-control" placeholder="username" type="text">
+            </div> <!-- form-group// -->
+            <div class="form-group">
+                <label>Password</label>
+                <input name="password" class="form-control" placeholder="******" type="password">
+            </div> <!-- form-group// -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block"> Login </button>
+            </div> <!-- form-group// -->
+        </form>
+    </div>
+    <br>
+    <div th:replace="common :: footer"></div>
 </div>
 
 <div th:replace="common :: site-script"></div>

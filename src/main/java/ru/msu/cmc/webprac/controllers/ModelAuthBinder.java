@@ -8,10 +8,8 @@ public class ModelAuthBinder {
 
     public static void bindAuth(@NonNull Model model, Authentication auth) {
         model.addAttribute("authenticated", auth != null);
-        if (auth != null) {
-            model.addAttribute("user_name", auth.getName());
-            model.addAttribute("user_role", auth.getAuthorities().toArray()[0].toString());
-        }
+        model.addAttribute("user_name", auth == null ? "" : auth.getName());
+        model.addAttribute("user_role", auth == null ? "" : auth.getAuthorities().toArray()[0].toString());
     }
 
 }

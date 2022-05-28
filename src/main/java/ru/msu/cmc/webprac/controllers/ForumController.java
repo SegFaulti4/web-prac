@@ -28,7 +28,7 @@ public class ForumController {
     @GetMapping("/forum")
     public String forum(Model model, Authentication auth) {
         bindAuth(model, auth);
-        List<ForumPartition> partitions = (List<ForumPartition>) forumPartitionDAO.getAll();
+        List<ForumPartition> partitions = forumPartitionDAO.getAll();
         if (auth == null || !Objects.equals(auth.getAuthorities().toArray()[0].toString(), "moderator")) {
             partitions.removeIf(p -> !p.getGeneral_access());
         }
@@ -39,11 +39,11 @@ public class ForumController {
     @PostMapping("/forum/post")
     public String createPartition(@RequestParam(name = "partition") String partition_name,
                                   Model model, Authentication auth) {
-        assert auth != null && Objects.equals(auth.getAuthorities().toArray()[0].toString(), "moderator");
         ForumUser u = forumUserDAO.getByID(auth.getName());
         assert u != null;
         forumPartitionDAO.save(new ForumPartition(partition_name, u, true));
-        return forum(model, auth);
+
+        return "redirect:/forum";
     }
 
 }
