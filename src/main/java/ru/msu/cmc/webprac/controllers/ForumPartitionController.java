@@ -16,6 +16,7 @@ import ru.msu.cmc.webprac.models.ForumPartition;
 import ru.msu.cmc.webprac.models.ForumUser;
 import ru.msu.cmc.webprac.models.Thread;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +46,8 @@ public class ForumPartitionController {
             threads = threadDAO.getPartitionThreads(p, pattern);
         }
         assert threads != null;
+
+        threads.sort(Comparator.comparing(t -> t.getId().getThread_name()));
 
         model.addAttribute("partition", p);
         model.addAttribute("threads", threads);

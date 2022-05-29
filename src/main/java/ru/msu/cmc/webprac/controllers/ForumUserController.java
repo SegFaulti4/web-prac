@@ -15,6 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.msu.cmc.webprac.DAO.ForumUserDAO;
 import ru.msu.cmc.webprac.models.ForumUser;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,6 +60,9 @@ public class ForumUserController {
         if (auth == null || !Objects.equals(auth.getAuthorities().toArray()[0].toString(), "moderator")) {
             users.removeIf(u -> u.getUserrole() == ForumUser.UserRole.BANNED);
         }
+
+        users.sort(Comparator.comparing(ForumUser::getId));
+
         model.addAttribute("users", users);
         addSearchAttributes(partition_name, thread_name, pattern, model);
         return "forumUsers";

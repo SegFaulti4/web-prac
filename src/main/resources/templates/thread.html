@@ -64,9 +64,6 @@
       <div class="row bg-light" style="padding: 10px">
         <div class="col-2 my-auto">
           <article style="word-wrap: break-word" class="my-auto" th:text="${message.getCreated_by().getId()}"></article>
-          <footer>
-            <small class="col my-auto" th:text="'#' + ${message.getId()}"></small>
-          </footer>
         </div>
         <div class="col-8 border-right border-left my-auto">
           <header class="my-auto">
@@ -74,6 +71,7 @@
           </header>
           <article style="word-wrap: break-word" class="my-auto" th:text="${message.getMessage()}"></article>
           <footer class="my-auto">
+            <small class="col my-auto" th:text="'#' + ${message.getId()}"></small>
             <small class="col my-auto" th:text="${message.getCreated_at()}"></small>
           </footer>
         </div>
@@ -81,7 +79,7 @@
           <div class="row my-auto" style="padding: 3px" th:if="${authenticated}">
             <button class="w-100 h-100 btn btn-secondary" th:onclick="'document.getElementById(\'reply-to\').value = ' + ${message.getId()}">Reply</button>
           </div>
-          <a class="text-decoration-none row my-auto" style="padding: 3px"  th:if="${#strings.equals(user_role, 'moderator')} or ${#strings.equals(user_name, thread.getCreated_by().getId())}" th:href="@{/forum/{partition}/{thread}/delete(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()}, message=${message.getId()})}">
+          <a class="text-decoration-none row my-auto" style="padding: 3px"  th:if="${#strings.equals(user_role, 'moderator')} or ${#strings.equals(user_name, message.getCreated_by().getId())}" th:href="@{/forum/{partition}/{thread}/delete(partition=${thread.getId().getPartition_name()}, thread=${thread.getId().getThread_name()}, message=${message.getId()})}">
             <button type="button" class="w-100 h-100 btn btn-danger">Delete</button>
           </a>
         </div>

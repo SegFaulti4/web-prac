@@ -12,8 +12,7 @@ import ru.msu.cmc.webprac.DAO.ForumUserDAO;
 import ru.msu.cmc.webprac.models.ForumPartition;
 import ru.msu.cmc.webprac.models.ForumUser;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 public class ForumController {
@@ -32,6 +31,7 @@ public class ForumController {
         if (auth == null || !Objects.equals(auth.getAuthorities().toArray()[0].toString(), "moderator")) {
             partitions.removeIf(p -> !p.getGeneral_access());
         }
+        partitions.sort(Comparator.comparing(ForumPartition::getId));
         model.addAttribute("partitions", partitions);
         return "forum";
     }

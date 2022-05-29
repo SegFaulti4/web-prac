@@ -22,7 +22,7 @@ public class ForumUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         ForumUser u = forumUserDAO.getByID(username); //userDAO == null Causing NPE
-        if (u == null) {
+        if (u == null || u.getUserrole().equals(ForumUser.UserRole.BANNED)) {
             throw new UsernameNotFoundException("Oops!");
         }
 
